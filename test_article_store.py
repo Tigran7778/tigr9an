@@ -7,4 +7,4 @@ def test_login_page_title(page: Page):
     page.locator('//*[@id="username"]').fill('dssdfer')
     page.locator('//*[@id="password"]').fill('we43324rrfsd')
     page.keyboard.press('Enter')
-    expect(page.locator("//div[contains(@class, 'login-error')]")).to_have_text("Invalid login or password.") #проверка
+    expect(page.locator("//div[contains(@class, 'login-error')]")).to_have_text("Invalid login or password.")
