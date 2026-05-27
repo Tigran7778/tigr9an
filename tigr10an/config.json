@@ -1,0 +1,14 @@
+{
+  "browser": {
+    "name": "chrome",
+    "headless": false,
+    "slow_mo": 0
+  },
+  "app": {
+    "base_url": "http://144.31.63.127:5000/"
+  },
+  "timeouts": {
+    "default": 10000,
+    "navigation": 30000
+  }
+}
