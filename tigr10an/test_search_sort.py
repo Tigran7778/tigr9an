@@ -1,7 +1,6 @@
 import pytest
 import logging
 from playwright.sync_api import sync_playwright
-from config_reader import ConfigReader
 from main_page import MainPage
 from search_results_page import SearchResultsPage
 
@@ -15,34 +14,24 @@ logger = logging.getLogger(__name__)
     ("habits", 15, "Price: high to low"),
 ])
 def test_search_and_filter(name, n, filter_type):
-    """
-    Тест сортировки цен на странице результатов поиска.
-
-    Сценарий:
-      1. Открить главную страницу.
-      2. Ввести поисковый запрос.
-      3. Перейти на страницу результатов.
-      4. Установить фильтр сортировки.
-      5. Собрать цены первых n товаров.
-      6. Проверить, что цены отсортированы правильно.
-    """
+    """Тест сортировки цен на странице результатов поиска."""
     logger.info(f"▶ START | name='{name}' | n={n} | filter='{filter_type}'")
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         try:
-            # ── Шаг 1-2: Открить главную страницу и ввести запрос ────────────
-            main_page = MainPage(page)  # ✅ ТОЛЬКО page!
+            # Шаг 1-2: Открить главную страницу и ввести запрос
+            main_page = MainPage(page)
             main_page.open()
             main_page.search(name)
 
-            # ── Шаг 3-4: Установить фильтр ─────────────────────────────────────
+            # Шаг 3-4: Установить фильтр
             results_page = SearchResultsPage(page)
             results_page.set_filter(filter_type)
 
-            # ── Шаг 5: Собрать цены ────────────────────────────────────────────
+            # Шаг 5: Собрать цены
             prices = results_page.get_prices(n)
 
             assert len(prices) > 0, (
@@ -53,7 +42,7 @@ def test_search_and_filter(name, n, filter_type):
 
             logger.info(f"  Collected {len(prices)} prices: {prices}")
 
-            # ── Шаг 6: Проверить сортировку ────────────────────────────────────
+            # Шаг 6: Проверить сортировку
             if filter_type == "Price: low to high":
                 expected = sorted(prices)
                 assert prices == expected, (

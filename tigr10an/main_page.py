@@ -7,18 +7,9 @@ logger = logging.getLogger(__name__)
 
 
 class MainPage(BasePage):
-    """
-    Page Object главной страницы http://144.31.139.115:5000/
-
-    HTML-структура (ключевые элементы):
-        <input  data-testid="search-input"  name="q" ...>
-        <button data-testid="search-button" type="submit">Search</button>
-    """
-
-    # ── XPath локаторы ────────────────────────────────────────────────────────
-    SEARCH_INPUT  = '//*[@id="search"]'
+    # XPath локаторы
+    SEARCH_INPUT = '//*[@id="search"]'
     SEARCH_BUTTON = '//button[contains(@data-testid, "search")]'
-    # ─────────────────────────────────────────────────────────────────────────
 
     def __init__(self, page: Page) -> None:
         super().__init__(page)
@@ -31,11 +22,7 @@ class MainPage(BasePage):
         logger.info("Main page opened")
 
     def search(self, query: str) -> None:
-        """
-        Вводит поисковый запрос в строку поиска и отправляет форму.
-
-        :param query: Текст поискового запроса (например, "city")
-        """
+        """Вводит поисковый запрос в строку поиска и отправляет форму."""
         logger.info(f"Typing search query: '{query}'")
         search_input = self.page.locator(self.SEARCH_INPUT)
         search_input.wait_for(state="visible", timeout=10_000)

@@ -4,11 +4,6 @@ from typing import Any
 
 
 class ConfigReader:
-    """
-    Singleton-класс для чтения конфигурационных параметров из config.json.
-    Гарантирует единственный экземпляр на всё время выполнения тестов.
-    """
-
     _instance: "ConfigReader | None" = None
     _config: dict = {}
 
@@ -26,13 +21,7 @@ class ConfigReader:
             self._config = json.load(f)
 
     def get(self, *keys: str, default: Any = None) -> Any:
-        """
-        Возвращает значение по цепочке ключей.
-
-        Пример:
-            config.get("browser", "headless")  ->  False
-            config.get("app", "base_url")       ->  "http://..."
-        """
+        """Возвращает значение по цепочке ключей."""
         value = self._config
         for key in keys:
             if isinstance(value, dict):

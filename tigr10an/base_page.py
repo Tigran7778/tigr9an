@@ -5,12 +5,6 @@ logger = logging.getLogger(__name__)
 
 
 class BasePage:
-    """
-    Базовый класс Page Object.
-    Содержит общие методы навигации и ожидания,
-    которые наследуют все конкретные страницы.
-    """
-
     def __init__(self, page: Page) -> None:
         self.page = page
 
