@@ -36,6 +36,10 @@ class SearchResultsPage(BasePage):
 
         # 2. Ждём загрузки новых результатов (исчезновения is-loading)
         self.page.wait_for_function(
+            """() => {
+                const region = document.querySelector('[data-testid="results-region"]');
+                return region && !region.classList.contains('is-loading');
+            }""",
             timeout=10_000
         )
 
