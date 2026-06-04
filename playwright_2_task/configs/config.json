@@ -1,0 +1,26 @@
+{
+  "url": "http://144.31.63.127:5000/",
+  "search_name": "city",
+  "filters": [
+    {
+      "name": "city",
+      "n": 10,
+      "filter_type": "Price: low to high"
+    },
+    {
+      "name": "city",
+      "n": 15,
+      "filter_type": "Price: high to low"
+    },
+    {
+      "name": "habits",
+      "n": 10,
+      "filter_type": "Price: low to high"
+    },
+    {
+      "name": "habits",
+      "n": 15,
+      "filter_type": "Price: high to low"
+    }
+  ]
+}
