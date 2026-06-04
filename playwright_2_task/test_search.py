@@ -1,56 +1,53 @@
 import pytest
 from playwright.sync_api import sync_playwright
-from pages.main_page import MainPage
 from pages.search_results_page import SearchResultsPage
-from config_reader import ConfigReader
+from pages.main_page import MainPage
+from configs.config_reader import ConfigReader
 
 
-@pytest.fixture(scope="session")
-def browser():
+@pytest.mark.parametrize("filter_data", ConfigReader().get_filters())
+def test_article_search(filter_data):
+    n = filter_data["n"]
+    filter_type = filter_data["filter_type"]
+
     config = ConfigReader()
+    url = config.get_url()
+    name = config.get_search_name()
+
     with sync_playwright() as p:
-        # Можно выбрать браузер из конфигурации, если нужно
-        browser_type = p.chromium  # или p.firefox, p.webkit
-        browser = browser_type.launch(headless=True)
-        yield browser
+        # Запуск браузера
+        browser = p.chromium.launch(headless=False)
+        page = browser.new_page()
+
+        # Переход на страницу
+        page.goto(url)
+        page.wait_for_timeout(5000)
+
+        # Создаем объекты страниц
+        main_page = MainPage(page)
+        results_page = SearchResultsPage(page)
+
+        # Выполнить поиск
+        main_page.search_article(name)
+        page.wait_for_timeout(5000)
+
+        # Применить фильтр
+        results_page.apply_filter(filter_type)
+        # Ждем, пока обновится страница после применения фильтра
+        page.wait_for_timeout(5000)
+
+        # Получить цены
+        prices = results_page.get_prices(n)
+        print(f"Цены: {prices}")
+
+        # В зависимости от фильтра задаем ожидаемый порядок
+        if filter_type == "Price: low to high":
+            expected_prices = sorted(prices)
+        elif filter_type == "Price: high to low":
+            expected_prices = sorted(prices, reverse=True)
+
+        # Проверка сортировки
+        assert prices == expected_prices, f"Prices are not sorted correctly for filter - {filter_type}"
+
+        # Закрываем браузер
         browser.close()
-
-
-@pytest.fixture()
-def page(browser):
-    context = browser.new_context()
-    page = context.new_page()
-    yield page
-    context.close()
-
-
-def test_search_and_filter(page):
-    config = ConfigReader()
-    url = config.get("url")
-    filters = config.get("filters", [])
-
-    main_page = MainPage(page)
-    main_page.open(url)
-
-    # Выполняем поиск с именем из конфига
-    main_page.search_article()
-
-    search_results_page = SearchResultsPage(page)
-
-    # Выбираем первый фильтр из списка
-    if not filters:
-        pytest.fail("Нет доступных фильтров в конфигурации")
-    filter_info = filters[0]
-    filter_type = filter_info["filter_type"]
-    n = filter_info["city"]  # или "habits" — зависит от сценария
-
-    # Применяем фильтр
-    search_results_page.apply_filter(filter_type)
-
-    # Получаем цены первых n статей
-    prices = search_results_page.get_prices(n)
-
-    # Проверка сортировки цен
-    assert prices == sorted(prices), "Цены не отсортированы по возрастанию"
-
-    print(f"Цены: {prices}")

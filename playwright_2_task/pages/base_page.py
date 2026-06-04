@@ -1,5 +1,5 @@
 from playwright.sync_api import Page
-from config_reader import ConfigReader
+from configs.config_reader import ConfigReader
 
 
 class BasePage:

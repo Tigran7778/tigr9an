@@ -1,8 +1,11 @@
 import json
+import os
 from typing import Optional
 
+
 class ConfigReader:
-    CONFIG_PATH = "config.json"
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    CONFIG_PATH = os.path.join(current_dir, 'config.json')
     _instance: Optional["ConfigReader"] = None
     _config: dict = {}
     _config_path: str = CONFIG_PATH
@@ -31,7 +34,7 @@ class ConfigReader:
             self._config = json.load(file)
 
     def get_url(self):
-        return self._config.get('url', '') # Возвращает пустую строку, если ключ отсутствует
+        return self._config.get('url', '')  # Возвращает пустую строку, если ключ отсутствует
 
     def get_search_name(self):
         return self._config.get('search_name', '')
