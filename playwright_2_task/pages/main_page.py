@@ -5,7 +5,7 @@ from .base_page import BasePage
 class MainPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
-        # Локаторы находящиеся на главной странице
+        # локаторы находящиеся на главной странице
         self.search_input = self.page.get_by_role("textbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
 
